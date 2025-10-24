@@ -8,6 +8,7 @@ import {
 import { HydratedDocument } from 'mongoose';
 import { GenderEnum, ProviderEnum } from 'src/common';
 import { generateHash } from 'src/common/utils';
+import { OtpDocument } from './otp.model';
 
 @Schema({
   strictQuery: true,
@@ -56,7 +57,7 @@ export class User {
     type: Date,
     required: false,
   })
-  confirmEmail: Date;
+  confirmAt: Date;
 
   @Prop({
     type: String,
@@ -85,16 +86,25 @@ export class User {
     required: false,
   })
   changeCredentialsTime: Date;
+
+  @Virtual()
+  otp: OtpDocument[];
 }
 
 const userSchema = SchemaFactory.createForClass(User);
 
-// userSchema.pre('save', async function (next) {
-//   if (this.isModified('password')) {
-//     this.password = await generateHash(this.password);
-//   }
-//   next();
-// });
+userSchema.virtual('otp', {
+  localField: '_id',
+  foreignField: 'createdBy',
+  ref: 'Otp',
+});
+
+userSchema.pre('save', async function (next) {
+  if (this.isModified('password')) {
+    this.password = await generateHash(this.password);
+  }
+  next();
+});
 
 export type UserDocument = HydratedDocument<User>;
 
