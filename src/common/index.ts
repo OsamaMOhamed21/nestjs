@@ -5,4 +5,4 @@ export * from './pipes';
 export * from './enums';
 export * from './service';
 export * from './utils';
-
+export * from './entities';

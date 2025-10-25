@@ -4,10 +4,19 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { compareHash, IUser, OtpEnum, SecurityService } from 'src/common';
-import { OtpRepository, UserRepository } from 'src/DB';
+import {
+  compareHash,
+  IUser,
+  LoginCredentialsResponse,
+  OtpEnum,
+  ProviderEnum,
+  SecurityService,
+  TokenService,
+} from 'src/common';
+import { OtpRepository, UserDocument, UserRepository } from 'src/DB';
 import {
   confirmEmailDto,
+  LoginBodyDto,
   resendConfirmEmailDto,
   SignupBodyDto,
 } from './dto/signup.dto';
@@ -15,6 +24,8 @@ import {
 import { emailEvent } from 'src/common/utils/email/email.event';
 import { Types } from 'mongoose';
 import { generateNumericalOtp } from 'src/common/utils/security/otp.security';
+import { sign } from 'jsonwebtoken';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthenticationService {
@@ -23,6 +34,7 @@ export class AuthenticationService {
     private readonly userRepository: UserRepository,
     private readonly securityService: SecurityService,
     private readonly otpRepository: OtpRepository,
+    private readonly tokenService: TokenService,
   ) {}
 
   private async createConfirmEmailOtp(userId: Types.ObjectId) {
@@ -89,7 +101,7 @@ export class AuthenticationService {
       )
     ) {
       throw new BadRequestException('Invalid Code');
-    } 
+    }
 
     user.confirmAt = new Date();
     await user.save();
@@ -118,5 +130,25 @@ export class AuthenticationService {
     }
     await this.createConfirmEmailOtp(user._id);
     return 'Done';
+  }
+
+  async login(data: LoginBodyDto): Promise<LoginCredentialsResponse> {
+    const { email, password } = data;
+    const user = await this.userRepository.findOne({
+      filter: {
+        email,
+        confirmAt: { $exists: true },
+        provide: ProviderEnum.SYSTEM,
+      },
+    });
+    if (!user) {
+      throw new NotFoundException('Fail To Find Matching Account');
+    }
+
+    if (!(await this.securityService.compareHash(password, user.password))) {
+      throw new NotFoundException('Fail To Find Matching Account');
+    }
+
+    return await this.tokenService.createLoginCredentials(user as UserDocument);
   }
 }

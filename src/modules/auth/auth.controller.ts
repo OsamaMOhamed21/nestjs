@@ -8,7 +8,14 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthenticationService } from './auth.service';
-import { confirmEmailDto, resendConfirmEmailDto, SignupBodyDto } from './dto/signup.dto';
+import {
+  confirmEmailDto,
+  LoginBodyDto,
+  resendConfirmEmailDto,
+  SignupBodyDto,
+} from './dto/signup.dto';
+import { LoginCredentialsResponse } from 'src/common';
+import { LoginResponse } from './entities/auth.entity';
 
 @UsePipes(
   new ValidationPipe({
@@ -34,8 +41,9 @@ export class AuthenticationController {
 
   @HttpCode(200)
   @Post('login')
-  login() {
-    return 'login Page';
+  async login(@Body() body: LoginBodyDto): Promise<LoginResponse> {
+    const credentials = await this.authenticationService.login(body);
+    return { message: 'Done', data: { credentials } };
   }
 
   @Post('resend-confirm-email')

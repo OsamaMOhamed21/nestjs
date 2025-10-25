@@ -19,6 +19,11 @@ export class confirmEmailDto extends resendConfirmEmailDto {
   code: string;
 }
 
+export class LoginBodyDto extends resendConfirmEmailDto {
+  @IsStrongPassword()
+  password: string;
+}
+
 export class SignupBodyDto extends resendConfirmEmailDto {
   @Length(2, 52)
   @IsString()
