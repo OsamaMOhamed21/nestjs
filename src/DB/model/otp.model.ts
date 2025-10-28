@@ -1,6 +1,7 @@
 import { MongooseModule, Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
-import { generateHash, OtpEnum } from 'src/common';
+import { generateHash} from 'src/common';
+import { OtpEnum } from 'src/common/enums';
 import { emailEvent } from 'src/common/utils/email/email.event';
 
 @Schema({ timestamps: true })

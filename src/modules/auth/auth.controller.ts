@@ -14,7 +14,6 @@ import {
   resendConfirmEmailDto,
   SignupBodyDto,
 } from './dto/signup.dto';
-import { LoginCredentialsResponse } from 'src/common';
 import { LoginResponse } from './entities/auth.entity';
 
 @UsePipes(

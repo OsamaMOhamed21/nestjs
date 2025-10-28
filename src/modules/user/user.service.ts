@@ -5,7 +5,7 @@ import { IUser } from 'src/common';
 export class UserService {
   constructor() {}
 
-  allUsers(): IUser[] {
-    return [{ id: 2, name: 'skdfjvm', email: 'fvijk', password: 'svkjm' }];
+  profile(): string {
+    return 'done';
   }
 }

@@ -5,11 +5,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import {
-  compareHash,
   IUser,
   LoginCredentialsResponse,
-  OtpEnum,
-  ProviderEnum,
   SecurityService,
   TokenService,
 } from 'src/common';
@@ -21,11 +18,9 @@ import {
   SignupBodyDto,
 } from './dto/signup.dto';
 
-import { emailEvent } from 'src/common/utils/email/email.event';
-import { Types } from 'mongoose';
 import { generateNumericalOtp } from 'src/common/utils/security/otp.security';
-import { sign } from 'jsonwebtoken';
-import { JwtService } from '@nestjs/jwt';
+import { Types } from 'mongoose';
+import { OtpEnum, ProviderEnum } from 'src/common/enums';
 
 @Injectable()
 export class AuthenticationService {
