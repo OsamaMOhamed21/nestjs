@@ -15,6 +15,7 @@ import {
   ProviderEnum,
   RoleEnum,
 } from 'src/common/enums';
+import { IUser } from 'src/common';
 
 @Schema({
   strictQuery: true,
@@ -22,7 +23,7 @@ import {
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
 })
-export class User {
+export class User implements IUser {
   @Prop({
     type: String,
     required: true,
@@ -109,6 +110,9 @@ export class User {
 
   @Virtual()
   otp: OtpDocument[];
+
+  @Prop({ type: String })
+  profilePicture: string;
 }
 
 const userSchema = SchemaFactory.createForClass(User);

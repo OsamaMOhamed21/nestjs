@@ -8,3 +8,4 @@ export * from './utils';
 export * from './entities';
 export * from './guards';
 export * from './modules';
+export * from './';
